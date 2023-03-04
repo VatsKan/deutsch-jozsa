@@ -7,6 +7,7 @@ from classical import BlackBox, determine_classical
 
 # class TestBlackBox():
 
+
 class TestClassicalAlgorithm(unittest.TestCase):
     def test_bb_1_bit_bal(self):  
         bb = BlackBox(1, 'balanced') 
