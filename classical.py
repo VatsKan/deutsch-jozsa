@@ -1,4 +1,5 @@
 from random import randint, shuffle
+from typing import Callable
 
 from consts import *
 
@@ -18,13 +19,26 @@ class BlackBox:
             'CONSTANT_0' means the black box should always output 0
             'CONSTANT_1' means the black box should always output 1
             'BALANCED' means the black box should output a 1 half of the time and 0 otherwise.
+       
+        Raises
+        ------
+        ValueError
+            if bit_length is not a positive integer less than 24 bits
+            or if bal_or_const is not of BalOrConst(Enum) type
         """
 
-        self.bit_length = bit_length #TODO: positive integer!! PUT LIMIT ON SIZE....24 bit?? 
+        if type(bit_length) is not int or bit_length<1:
+            raise ValueError("Bit length must be a positive integer") 
+        if bit_length>24:
+            raise ValueError("Keep bit length to less than 24 to prevent overloading CPU") 
+        if type(bal_or_const) is not BalOrConst:
+            raise TypeError('bal_or_const must be of type BalOrConst(Enum)')
+
+        self.bit_length = bit_length 
         self.type = bal_or_const
         self.black_box = self.generate_black_box(bit_length, bal_or_const)
 
-    def generate_black_box(self, bit_length: int, bal_or_const: BalOrConst) -> BlackBox:
+    def generate_black_box(self, bit_length: int, bal_or_const: BalOrConst) -> Callable[[str], str]:
         """
         Generates a (balanced or constant) black box for testing against
         
@@ -35,7 +49,7 @@ class BlackBox:
 
         Returns
         -------
-        black_box: function
+        black_box: function (n_bit_string -> 1_bit_string)
             black_box function takes an input of bit_length, and assigns a balanced output or constant output.
         """
 
@@ -136,6 +150,7 @@ def determine_classical(black_box_obj: BlackBox) -> str:
     str
         'balanced' | 'constant'.
     """ 
+
     bit_length = black_box_obj.bit_length
     black_box = black_box_obj.black_box
 

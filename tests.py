@@ -4,7 +4,34 @@ from consts import *
 from classical import BlackBox, determine_classical
 
 
-# class TestBlackBox():
+class TestBlackBox(unittest.TestCase):
+    def test_black_box_raise_init_errors(self):
+        """
+        Tests value errors if use wrong initialisation parameters
+        """
+        self.assertRaises(ValueError, BlackBox, 0, BalOrConst.BALANCED)
+        self.assertRaises(ValueError, BlackBox, 32, BalOrConst.BALANCED)
+        self.assertRaises(TypeError, BlackBox, 17, 'balanced')
+
+    def test_black_box_generate(self):
+        bb = BlackBox(4, BalOrConst.BALANCED)
+        self.assertTrue(bb.black_box('0110')=='0' or '1')
+
+    def test_get_all_inputs(self):
+        bb = BlackBox(4, BalOrConst.BALANCED)
+        input_list = bb.get_all_inputs()
+        self.assertTrue(input_list[0]=='0000')
+        self.assertTrue(input_list[3]=='0011')
+        self.assertTrue(input_list[15]=='1111')
+    
+    def test_get_output(self):
+        bb_A = BlackBox(6, BalOrConst.CONSTANT_0)
+        output = bb_A.get_output('100101')
+        self.assertTrue(output=='0')
+
+        bb_B = BlackBox(3, BalOrConst.CONSTANT_1)
+        output = bb_B.get_output('010')
+        self.assertTrue(output=='1')
 
 
 class TestClassicalAlgorithm(unittest.TestCase):
