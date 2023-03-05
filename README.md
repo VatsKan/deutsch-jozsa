@@ -36,7 +36,7 @@ Run the following commands.
 git pull
 python3 -m venv venv
 source venv/bin/activate  # to activate the virtual environment
-pip install requirements.txt
+pip install requirements.txt  # if this file exists
 python3 classical.py
 ```
 
@@ -62,6 +62,10 @@ A quantum solution to this problem is termed the Deustch-Josza algorithm.
 It runs in a single step so it is in theory significantly more efficient. 
 Practically, the run-time will depend on the size of the input of the black box and
 how long it takes to perform a quantum operation on a qpu vs a classical operation on a cpu. 
+
+The black box $f$ can be implemented as an oracle $U_f$ which maps the state 
+$\lvert x \rangle \lvert y \rangle \mapsto \lvert x \rangle \lvert y\oplus f(x) \rangle$
+(where $\oplus$ is addition modulo 2).
 
 ## Improvements
 This section is to detail possible improvements and tasks to this mini-project.
