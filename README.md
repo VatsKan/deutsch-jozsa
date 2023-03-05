@@ -23,6 +23,11 @@ if it is constant, then we must check all possible `n` bit srings in the worst
 case scenario, however for the balanced case we just need to 
 check half+1 of all possible `n` bit strings. 
 
+### Approach
+This problem naturally lends itself to a TDD approach. In particular,
+it makes sense to create black boxes to test on, before writing
+the algorithm to check if the black box is balanced or constant. 
+
 ### Run the Classical program
 Requires python3 and git installation.
 
@@ -45,7 +50,7 @@ run tests with command:
 ```python -m unittest tests``` 
 
 [TODO: EDIT!!]
-Edge cases tested:
+Remark: Some edge cases tested.
 - the output is a 1 bit string 
 - the black box is indeed balanced or constant (not something in between)
 - the inputs are all `n` bits
@@ -54,10 +59,13 @@ Edge cases tested:
 - output list is of the right length, and balanced!
 - test appropriate exceptions are being raised
 
-### Approach
-This problem naturally lends itself to a TDD approach. In that
-it makes sense to create black boxes to test on, before writing
-the algorithm. 
+To understand the program better, try adding (variations of) the following 
+code to `classical.py` and running it
+```
+box = BlackBox(16, 'balanced')
+print(box.get_all_input_output_pairs())
+print(determine_classical(box)) # should output 'balanced'
+```
 
 ## Quantum Solution
 - Write and run on some different quantum computers? Or just use simulator
@@ -84,6 +92,10 @@ This section is to detail possible improvements and tasks to this mini-project.
     - turn into package/module structure
     - (consider using docker container)
 - add in hook to run linters, tests, etc. before commiting.
+- improve types to make more specific
+    - e.g. 0 | 1 ...instead of int (or perhaps byte type)
+    - positive int, instead of int
+    - specify length of lists
 - improve docstrings
 - check PEP guidelnes
     - add in black and/or flake8 (i.e. linters etc.)

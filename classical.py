@@ -1,34 +1,37 @@
 from random import randint, shuffle
 
+from consts import *
+
 
 class BlackBox:
     """
     Creates a constant or balanced black box of specified bit length.
     """
 
-    def __init__(self, bit_length, bal_or_const):
+    def __init__(self, bit_length: int, bal_or_const: BalOrConst):
         """
         Paramaters
         ----------
         bit_length: int (positive integer)
-        bal_or_const: str ('balanced' | 'constant0' | 'constant1')
-            'constant0' means the black box to always output 0
-            'constant1' means the black box to always output 1
-            'balanced' means the black box to output a 1 half of the time and 0 otherwise.
+            number of bits for an input to the black box
+        bal_or_const: BalOrConst(Enum)
+            'CONSTANT_0' means the black box should always output 0
+            'CONSTANT_1' means the black box should always output 1
+            'BALANCED' means the black box should output a 1 half of the time and 0 otherwise.
         """
 
-        self.bit_length = bit_length #TODO: positive integer!! PUT LIMIT ON SIZE....64 bit?? 
+        self.bit_length = bit_length #TODO: positive integer!! PUT LIMIT ON SIZE....24 bit?? 
         self.type = bal_or_const
         self.black_box = self.generate_black_box(bit_length, bal_or_const)
 
-    def generate_black_box(self, bit_length, bal_or_const):
+    def generate_black_box(self, bit_length: int, bal_or_const: BalOrConst) -> BlackBox:
         """
         Generates a (balanced or constant) black box for testing against
         
         Arguments
         ---------
         bit_length: int (positive integer)
-        bal_or_const: str ('balanced' | 'constant_0' | 'constant_1')
+        bal_or_const: BalOrConst(Enum)
 
         Returns
         -------
@@ -37,7 +40,7 @@ class BlackBox:
         """
 
         black_box = None
-        if bal_or_const == 'balanced':
+        if bal_or_const == BalOrConst.BALANCED:
             if bit_length==1:
                 output_list = [0, 1]
                 shuffle(output_list)
@@ -48,13 +51,13 @@ class BlackBox:
                 output_list = [0]*half_output_length + [1]*half_output_length
                 shuffle(output_list) # mutates original output_list, to give randomised (balanced) output
                 black_box = lambda n_bit_string : str(output_list[int(n_bit_string, base=2)])
-        elif bal_or_const == 'constant0':
+        elif bal_or_const == BalOrConst.CONSTANT_0:
             black_box = lambda n_bit_string : '0'
-        elif bal_or_const == 'constant1':
+        elif bal_or_const == BalOrConst.CONSTANT_1:
             black_box = lambda n_bit_string : '1'
         return black_box
     
-    def generate_rand_n_bits(self, bit_length):
+    def generate_rand_n_bits(self, bit_length: int) -> list[int]:
         """
         Generates a random list of n=bit_length bits.
 
@@ -70,7 +73,7 @@ class BlackBox:
 
         return [randint(0,1)]*bit_length
  
-    def get_output(self, n_bit_string): 
+    def get_output(self, n_bit_string: str) -> str: 
         """
         Gets the output for any input to the black box
 
@@ -87,7 +90,7 @@ class BlackBox:
         
         return self.black_box(n_bit_string) 
 
-    def get_all_inputs(self):
+    def get_all_inputs(self) -> list[str]:
         """
         Gets all possible n-bit inputs for a black box.
 
@@ -100,7 +103,7 @@ class BlackBox:
         n = self.bit_length
         return [str(bin(i))[2:].zfill(n) for i in range(0, 2**n)]
 
-    def get_all_input_output_pairs(self):
+    def get_all_input_output_pairs(self) -> dict:
         """
         Fully determines the black box by computing and returning all of its input-output pairs.
 
@@ -118,7 +121,7 @@ class BlackBox:
         return dict(input_output_pairs)
 
 
-def determine_classical(black_box_obj):
+def determine_classical(black_box_obj: BlackBox) -> str:
     """
     Given a black box, a classical algorithm which tells us if it is constant or balanced.
     
@@ -132,17 +135,16 @@ def determine_classical(black_box_obj):
     -------
     str
         'balanced' | 'constant'.
-    """
-    
+    """ 
     bit_length = black_box_obj.bit_length
     black_box = black_box_obj.black_box
 
     # 1 bit case done seperately
     if(bit_length==1):
         if(black_box('0')==black_box('1')):
-            return 'constant'
+            return CONSTANT
         else:
-            return 'balanced'
+            return BALANCED
 
     input_list = black_box_obj.get_all_inputs()
     half_input_length = int((2**bit_length)/2)
@@ -154,4 +156,4 @@ def determine_classical(black_box_obj):
         if not constant_bool:
             break
     
-    return 'constant' if constant_bool else 'balanced'
+    return CONSTANT if constant_bool else BALANCED
